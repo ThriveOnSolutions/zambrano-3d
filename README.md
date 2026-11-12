@@ -1,3 +1,2 @@
 # zambrano-3d
-Site model: index.html
-Wall plan Rev A1-04: wall-plan.html
+3D site model of the 200 Zambrano Rd retaining walls, Rev A1-04 (v11.11.26).
