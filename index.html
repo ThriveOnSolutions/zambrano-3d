@@ -11,6 +11,7 @@ h1{font-size:15px;margin:0 0 2px}.sub{color:var(--mut);font-size:11.5px;margin-b
 h2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:12px 0 6px}
 .btns{display:flex;flex-wrap:wrap;gap:6px}button{border:1px solid #c9d1da;background:#fff;border-radius:6px;padding:5px 8px;font:inherit;cursor:pointer}button:hover{background:#eef3f8}button.on{background:#14181d;color:#fff;border-color:#14181d}
 label{display:flex;align-items:center;gap:7px;margin:3px 0;cursor:pointer}.sw{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid #0002}
+.why{font-size:12.5px;line-height:1.45;margin-top:6px}.why b{display:block;margin-top:8px}.why ul{margin:4px 0 6px;padding-left:18px}.why li{margin:3px 0}
 .note{font-size:11px;color:var(--mut);margin-top:10px}#hide{position:absolute;top:8px;right:10px;border:none;background:none;font-size:16px;padding:0;cursor:pointer}
 #recenter{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));z-index:5;background:#fff;border:1px solid #c9d1da;border-radius:8px;padding:8px 12px;font-weight:600;box-shadow:0 2px 10px #0002}
 #tip{position:fixed;display:none;z-index:8;max-width:340px;background:#fff;border-left:5px solid #7b2fbe;border-radius:8px;box-shadow:0 6px 22px #0004;padding:10px 12px;font-size:13px;line-height:1.45;pointer-events:none}#tip b{display:block;font-size:14px;margin-bottom:3px}#tip.nogo{border-left-color:#c81414}#tip.nogo b{color:#b00}#tip .tx{color:#888;font-size:11px;margin-top:6px}@media (max-width:700px){#tip{max-width:none;font-size:14px}}
@@ -35,6 +36,22 @@ label{display:flex;align-items:center;gap:7px;margin:3px 0;cursor:pointer}.sw{wi
 <label><input type="checkbox" id="tInside"> Inside view: roof off, furnished rooms</label>
 <label><input type="checkbox" id="tPiers"> Piers below grade (x-ray)</label>
 <label><input type="checkbox" id="tDusk"> Dusk lighting</label>
+<details id="why"><summary>Why 5 piers and a slope?</summary>
+<div class="why"><b>The 5 piers (wall N2, the tight spot)</b><ul>
+<li>Think of a fence post. A post stays upright because it is buried deep, not because it has a wide base.</li>
+<li>N2 has no room for a wide base: the house is 2.5 ft away on one side and the gas strip is 5.9 ft away on the other. So the wall stands on deep posts instead.</li>
+<li>Why five: the wall is 42 ft long, and five piers put one about every 8.5 ft, close enough for the beam on top to span between them.</li>
+<li>Why 19 ft deep: the building code formula for a buried post says this load needs 19.0 ft of grip in clay, and they are drawn at 19 ft.</li>
+<li>Why 4 ft wide: a fatter post pushes against more soil, so it can be shorter. A thinner one would have to go deeper, toward the water level reported at 23 ft.</li></ul>
+<b>The slope (walls E1 and E2, the roomy spot)</b><ul>
+<li>The ground there drops about 9 ft. The city caps a wall at under 4 ft.</li>
+<li>So the wall takes the bottom 3'-11", and the remaining 5 ft is a planted hill rising gently behind it: 2 ft of run for every 1 ft of rise.</li>
+<li>Dirt at that angle stays put on its own once it is planted and covered with erosion matting. It needs no concrete.</li>
+<li>There is room for it there: the slope needs about 10 ft of run and the gas strip is still 4 ft clear beyond it.</li></ul>
+<b>How sure this is</b><ul>
+<li>The slope is routine. 2:1 is a standard stable angle for planted soil.</li>
+<li>The piers are sound in principle and pass the code formula, but the soil below 7 ft has never been tested. The first hole drilled gets logged, and if the soil is weaker than assumed, the piers go deeper.</li></ul>
+<div class="btns"><button id="whyP">Show the piers</button><button id="whyS">Show the slope</button></div></div></details>
 <details id="leg"><summary>Legend and notes</summary>
 <label><span class="sw" style="background:#ece6da"></span> CIP wall, stucco finish, precast cap</label>
 <label><span class="sw" style="background:#4c8040"></span> N2 3'-0" planted terrace / 2H:1V slopes</label>
@@ -163,6 +180,7 @@ const $=id=>document.getElementById(id);
 $('tSmith').onchange=e=>{sGroup.visible=e.target.checked;dirty=true};$('tHouse').onchange=e=>{hGroup.visible=e.target.checked;dirty=true};$('tGuard').onchange=e=>{gGroup.visible=e.target.checked;dirty=true};$('tPlant').onchange=e=>{pGroup.visible=e.target.checked;dirty=true};$('tLabels').onchange=e=>{lGroup.visible=e.target.checked;dirty=true};
 $('tPiers').onchange=e=>{const on=e.target.checked;prGroup.visible=on;tmat.transparent=on;tmat.opacity=on?.35:1;tmat.depthWrite=!on;wallM.transparent=on;wallM.opacity=on?.5:1;tmat.needsUpdate=wallM.needsUpdate=true;dirty=true};
 $('tPool').onchange=e=>{poolG.visible=e.target.checked;dirty=true};$('tLand').onchange=e=>{landG.visible=e.target.checked;dirty=true};$('tInside').onchange=e=>{const v=e.target.checked;iGroup.visible=v;hGroup.visible=!v;$('tHouse').checked=!v;(window.__warm||[]).forEach(l=>l.intensity=v?14:0);if(v){userMoved=true;setView(...VIEWS['Inside (roof off)']);}dirty=true};$('tDusk').onchange=e=>{const d=e.target.checked;(window.__warm||[]).forEach(l=>l.intensity=d?40:9);if(window.__poolLight)window.__poolLight.intensity=d?60:0;sun.intensity=d?.25:2.2;hemi.intensity=d?.18:.9;r.toneMappingExposure=d?1.35:1.05;ups.forEach(l=>l.intensity=d?22:0);s.fog.color.set(d?0x2a3550:0xdbe7f0);s.background=d?new THREE.Color(0x2c3a58):skyDay;dirty=true};
+$('whyP').onclick=()=>{const e=$('tPiers');if(!e.checked){e.checked=true;e.dispatchEvent(new Event('change'));}userMoved=true;setView(...VIEWS['N2 terrace + piers']);};$('whyS').onclick=()=>{userMoved=true;setView(...VIEWS['E1-E2 slope']);};
 $('hide').onclick=()=>{$('ui').hidden=true;$('open').hidden=false;};$('open').onclick=()=>{$('ui').hidden=false;$('open').hidden=true;};
 if(MOB){$('ui').hidden=true;$('open').hidden=false;}
 vb.addEventListener('click',()=>{if(MOB){$('ui').hidden=true;$('open').hidden=false;}});
