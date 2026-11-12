@@ -19,7 +19,7 @@ label{display:flex;align-items:center;gap:7px;margin:3px 0;cursor:pointer}.sw{wi
 <button id="open" hidden>Views &amp; layers</button>
 <div id="ui"><button id="hide" title="Hide panel" aria-label="Hide panel">&#x2715;</button>
 <h1>200 Zambrano Rd, Lot 19: Retaining Walls</h1>
-<div class="sub">Rev A1-04, v11.11.26 Inspired by Moises. Walls on the A-1 / architect line (10.29.26 A0.3). Every wall 3'-11" max; N2 is two walls with a 3'-0" terrace. Grades are schematic.</div>
+<div class="sub">Rev 04, v11.11.26. Wall and slope concept inspired by A-1 26-14041; engineer of record BSA. Walls on the A-1 / architect line (10.29.26 A0.3). Every wall 3'-11" max; N2 is two walls with a 3'-0" terrace. Grades are schematic.</div>
 <h2>Views</h2><div class="btns" id="views"></div>
 <h2>Show</h2>
 <label><input type="checkbox" id="tHouse" checked> House massing</label>
@@ -34,7 +34,7 @@ label{display:flex;align-items:center;gap:7px;margin:3px 0;cursor:pointer}.sw{wi
 <label><span class="sw" style="background:#8c8c8c"></span> Smith driveway (no work)</label>
 <label><span class="sw" style="background:#7fa560"></span> 12' gas &amp; water easement (no work)</label>
 <label><span class="sw" style="background:#7b2fbe"></span> Pier 24" x 18 ft, N2 only (7)</label>
-<div class="note">Elevations, dimensions and pier lengths are governed by the sealed structural drawings and the Rev A1-04 wall set (v11.11.26). This model is for visualization and coordination only.</div></details>
+<div class="note">Elevations, dimensions and pier lengths are governed by the sealed structural drawings and the Rev 04 wall set (v11.11.26), sealed by BSA. This model is for visualization and coordination only.</div></details>
 </div>
 <div id="help"></div>
 <script>void 0,
@@ -102,7 +102,7 @@ for(const [t,x,y,z] of D.labels){const c=ctex(128,64,(g,w,h)=>{g.fillStyle='#fff
  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:c,depthTest:false,sizeAttenuation:false}));sp.scale.set(.07,.035,1);sp.position.set(x,z,-y);sp.renderOrder=9;lGroup.add(sp);}
 // context oaks
 const oL=[new THREE.MeshStandardMaterial({color:0x3f5f2a,roughness:1}),new THREE.MeshStandardMaterial({color:0x4d6e31,roughness:1})],bark=new THREE.MeshStandardMaterial({color:0x4a3a2c});
-for(const [x,y,z,sc] of [[2190,95,8,1.2],[2175,40,4,1.1],[2215,130,10,1.3],[2395,30,1,1.2],[2405,95,3,1.1],[2330,135,8,1.25],[2260,-15,0,1],[2150,0,0,1.1]]){const g=new THREE.Group();const t=new THREE.Mesh(new THREE.CylinderGeometry(.8*sc,1.1*sc,10*sc,8),bark);t.position.y=5*sc;g.add(t);
+for(const [x,y,z,sc] of [[2190,95,8,1.2],[2175,40,4,1.1],[2215,130,10,1.3],[2395,30,1,1.2],[2405,95,3,1.1],[2260,-15,0,1],[2150,0,0,1.1]]){const g=new THREE.Group();const t=new THREE.Mesh(new THREE.CylinderGeometry(.8*sc,1.1*sc,10*sc,8),bark);t.position.y=5*sc;g.add(t);
  for(let i=0;i<9;i++){const b=new THREE.Mesh(new THREE.SphereGeometry((5+rnd()*4)*sc,12,10),oL[i%2]);b.scale.y=.6;b.position.set((rnd()-.5)*16*sc,12*sc+rnd()*5*sc,(rnd()-.5)*16*sc);b.castShadow=true;g.add(b);}g.position.set(x,z,-y);s.add(g);}
 // lights
 const hemi=new THREE.HemisphereLight(0xdfeeff,0x9c8a6a,.9);s.add(hemi);
@@ -123,7 +123,7 @@ function up(e){pts.delete(e.pointerId);last={c:pts.size?centroid():{x:0,y:0},s:s
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('wheel',e=>{e.preventDefault();rad*=Math.exp(e.deltaY*.0012);upd();},{passive:false});
 document.getElementById('help').textContent=MOB?'One finger: rotate \u00b7 Two fingers: pan and pinch to zoom':'Drag: rotate \u00b7 Right-drag or Shift-drag: pan \u00b7 Scroll: zoom';
-const VIEWS={'Aerial':[[2345,135,75],[2280,55,0]],'N2 terrace + piers':[[2236,18,42],[2236,48,5]],'D along drive':[[2372,100,28],[2345,68,4]],'C at patio':[[2297,45,5.5],[2290,74,4]],'E1-E2 slope':[[2175,0,45],[2212,32,4]],'Over house':[[2290,-10,70],[2287,70,0]]};
+const SITEV=(()=>{const a=[...D.house];D.walls.forEach(w=>w.forEach(v=>a.push(v)));const xs=a.map(p=>p[0]),ys=a.map(p=>p[1]);const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys),cx=(x0+x1)/2,cy=(y0+y1)/2,sz=Math.max(x1-x0,y1-y0);const k=innerWidth<innerHeight?0.62:1;return [[cx+sz*0.45*k,cy+sz*0.85*k,sz*0.75*k],[cx,cy,2]];})(); const VIEWS={'Site overview':SITEV,'Aerial':[[2345,135,75],[2280,55,0]],'N2 terrace + piers':[[2236,18,42],[2236,48,5]],'D along drive':[[2372,100,28],[2345,68,4]],'C at patio':[[2297,45,5.5],[2290,74,4]],'E1-E2 slope':[[2175,0,45],[2212,32,4]],'Over house':[[2290,-10,70],[2287,70,0]]};
 const vb=document.getElementById('views');for(const k in VIEWS){const b=document.createElement('button');b.textContent=k;b.onclick=()=>setView(...VIEWS[k]);vb.appendChild(b);}
 const $=id=>document.getElementById(id);
 $('tHouse').onchange=e=>{hGroup.visible=e.target.checked;dirty=true};$('tGuard').onchange=e=>{gGroup.visible=e.target.checked;dirty=true};$('tPlant').onchange=e=>{pGroup.visible=e.target.checked;dirty=true};$('tLabels').onchange=e=>{lGroup.visible=e.target.checked;dirty=true};
@@ -132,8 +132,8 @@ $('tDusk').onchange=e=>{const d=e.target.checked;sun.intensity=d?.25:2.2;hemi.in
 $('hide').onclick=()=>{$('ui').hidden=true;$('open').hidden=false;};$('open').onclick=()=>{$('ui').hidden=false;$('open').hidden=true;};
 if(MOB){$('ui').hidden=true;$('open').hidden=false;}
 vb.addEventListener('click',()=>{if(MOB){$('ui').hidden=true;$('open').hidden=false;}});
-function resize(){const w=innerWidth,h=innerHeight;r.setSize(w,h,false);cam.aspect=w/h;const hf=70*Math.PI/180;cam.fov=w<h?Math.min(95,2*Math.atan(Math.tan(hf/2)/cam.aspect)*180/Math.PI):55;cam.updateProjectionMatrix();dirty=true;}addEventListener('resize',resize);resize();
-setView(...VIEWS['N2 terrace + piers']);
+function resize(){const w=innerWidth,h=innerHeight;r.setSize(w,h,false);cam.aspect=w/h;const hf=70*Math.PI/180;cam.fov=w<h?Math.min(95,2*Math.atan(Math.tan(hf/2)/cam.aspect)*180/Math.PI):55;cam.updateProjectionMatrix();dirty=true;}let userMoved=false;['pointerdown','wheel','touchstart'].forEach(ev=>cv.addEventListener(ev,()=>{userMoved=true},{passive:true}));addEventListener('resize',()=>{resize();if(!userMoved)setView(...VIEWS['Site overview']);});resize();
+setView(...VIEWS['Site overview']);
 (function loop(){requestAnimationFrame(loop);if(dirty){r.render(s,cam);dirty=false;}})();
 window.__view=(k)=>{setView(...VIEWS[k]);r.render(s,cam);};window.__ready=true;
 })();
